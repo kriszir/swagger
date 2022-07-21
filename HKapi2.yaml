@@ -1,0 +1,639 @@
+swagger: "2.0"
+info:
+  description: "This is a server design for TCS to help the selection between interns"
+  version: "1.0.1"
+  title: "Internship Selection Helper"
+  contact:
+    email: "krissz003214@gmail.com"
+
+tags:
+- name: "user"
+  description: "Operations about users"
+- name: "project"
+  description: "Here you can add, change, delete projects"
+- name: "position"
+  description: "Here you can see the details of the positions"
+- name: "interview"
+  description: "Here you can see the scheduled interviews"
+- name: "candidate"
+  description: "Here you can see the candidates"
+- name: "role"
+  description: "Here you can see the roles"
+  
+schemes:
+- "https"
+- "http"
+paths:
+
+  /interview:
+    post:
+      tags:
+      - "interview"
+      summary: "Add a new interview"
+      description: "This can only be done by the Sourcer"
+      operationId: "createInterview"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: '#/definitions/Interview'
+      responses:
+        "201":
+         description: "successful operation"
+         schema: 
+          $ref: '#/definitions/InterviewWithId'
+  /interview/{id}:
+    put:
+      tags:
+      - "interview"
+      summary: "Modify an interview"
+      operationId: "alterInterview"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+       "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Interview"
+       "400":
+          description: "Invalid id supplied"
+       "404":
+          description: "Interview not found"
+    get:
+      tags:
+      - "interview"
+      summary: "Here you can find an interview by id"
+      operationId: "findInterview"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+       "200":
+          description: "Interview succesfully found"
+          schema:
+            $ref: '#/definitions/Interview'
+    delete:
+      tags:
+      - "interview"
+      summary: "Delete a interview"
+      operationId: "deleteInterview"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "id"
+        type: "string"
+        required: true
+      responses:
+        "200":
+          description: "the interview is succesfully deleted"
+        "500":
+          description: "The server encountered an unexpected error, please try again later"
+        "400":
+          description: "Bad request. Try again with another id"
+  
+  /role:
+    post:
+      tags:
+      - "role"
+      summary: "Add a new role"
+      operationId: "createRole"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: '#/definitions/Role'
+      responses:
+        "201":
+         description: "successful operation"
+         schema: 
+          $ref: '#/definitions/RoleWithId'
+  /role/{id}:
+    put:
+      tags:
+      - "role"
+      summary: "Modify a role"
+      operationId: "alterRole"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+       "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Role"
+       "400":
+          description: "Invalid id supplied"
+       "404":
+          description: "Role not found"
+    get:
+      tags:
+      - "role"
+      summary: "Here you can find a role by id"
+      operationId: "findRole"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+       "200":
+          description: "Role succesfully found"
+          schema:
+            $ref: '#/definitions/RoleWithId'
+    delete:
+      tags:
+      - "role"
+      summary: "Delete a role"
+      operationId: "deleteRole"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "id"
+        type: "integer"
+        required: true
+      responses:
+        "200":
+          description: "the role is succesfully deleted"
+        "500":
+          description: "The server encountered an unexpected error, please try again later"
+        "400":
+          description: "Bad request. Try again with another id"
+          
+  /position:
+    post:
+      tags:
+      - "position"
+      summary: "Add a new position"
+      description: "This can only be done by the recruiter"
+      operationId: "createPosition"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema: 
+          $ref: '#/definitions/Position' 
+      responses:
+        default:
+          description: "successful operation"
+      
+  /position/{positionName}:
+    put:
+      tags:
+      - "position"
+      summary: "change the attributes of the position, for example adding a new applicannt"
+      description: "This can only be done by the Sourcer"
+      operationId: "alterPositon"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "positionName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Position"
+        "400":
+          description: "Invalid name supplied"
+        "404":
+          description: "Position not found"
+    delete:
+        tags:
+        - "position"
+        summary: "Here you can delete a position by name"
+        operationId: "deletePosition"
+        produces: 
+        - "application/json"
+        parameters:
+        - name: "positionName"
+          in: "path"
+          required: true
+          type: "string"
+        responses:
+          "200":
+            description: "succesful operation, the position has been deleted"
+          "404":
+            description: "Position not found, so it can not be deleted"
+    get:
+      tags:
+      - "position"
+      summary: "Search for a position"
+      operationId: "findPosition"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "positionName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "succesful operation"
+          schema: 
+            $ref: '#/definitions/Position'
+  
+  /user:
+    post:
+      tags:
+      - "user"
+      summary: "Create user"
+      description: "This can only be done by the administrator."
+      operationId: "createUser"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "201":
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/UserWithID'
+  /user/{id}:
+    get:
+      tags:
+      - "user"
+      summary: "Get user by id"
+      operationId: "getUserById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/UserWithID'
+        "400":
+          description: "Bad request. The specified Id is incorrect"
+        "404":
+          description: "User not found, try again with another id"
+    put:
+      tags:
+      - "user"
+      summary: "Update user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id of the user that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: "The modifiing of the user was succesful"
+          schema:
+            $ref: '#/definitions/UserWithID' 
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+    delete:
+      tags:
+      - "user"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid email supplied"
+        "404":
+          description: "User not found"
+          
+  /project:
+    post:
+      tags:
+      - "project"
+      summary: "Create a new project"
+      description: "This can only be done by the administrator"
+      operationId: "createProject"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: '#/definitions/Project'
+      responses:
+        default:
+          description: "succesful operation"
+    
+  /project/{projectName}:
+    get:
+      tags:
+      - "project"
+      summary: "Get project by name"
+      operationId: "getProjectByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "projectName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Project"
+        "400":
+          description: "Invalid email supplied"
+        "404":
+          description: "User not found"
+    put:
+      tags:
+      - "project"
+      summary: "Change the details of a project"
+      operationId: "changeProjectByName"
+      produces:
+      - "application/json"    
+      parameters:
+        - name: "projectName"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid project supplied"
+        "404":
+          description: "Project not found"
+    delete:
+      tags:
+      - "project"
+      summary: "Delete project"
+      operationId: "deleteProject"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "projectName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "404":
+          description: "Project not found"
+
+  /candidate:
+    post:
+      tags:
+      - "candidate"
+      summary: "Create candidate"
+      operationId: "createCandidate"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created candidate object"
+        required: true
+        schema:
+          $ref: "#/definitions/Candidate"
+      responses:
+        "201":
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/CandidateWithId'
+  /candidate/{id}:
+    get:
+      tags:
+      - "candidate"
+      summary: "Get user by id"
+      operationId: "getCandidateById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/CandidateWithId'
+        "400":
+          description: "Bad request. The specified Id is incorrect"
+        "404":
+          description: "Candidate not found, try again with another id"
+    put:
+      tags:
+      - "candidate"
+      summary: "Update candidate"
+      operationId: "updateCandidate"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id of the candidate that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated candidate object"
+        required: true
+        schema:
+          $ref: "#/definitions/Candidate"
+      responses:
+        "200":
+          description: "The modifiing of the user was succesful"
+          schema:
+            $ref: '#/definitions/CandidateWithId' 
+        "400":
+          description: "Invalid candidate supplied"
+        "404":
+          description: "Candidate not found"
+    delete:
+      tags:
+      - "candidate"
+      summary: "Delete candidate"
+      operationId: "deleteCandidate"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The candidate that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid email supplied"
+        "404":
+          description: "User not found"
+            
+  
+definitions:
+  Position:
+    type: "object"
+    properties:
+      positionName:
+        type: "string"
+      isOpened:
+        type: "boolean"
+      emptySpaces:
+        type: "integer"
+        format: "int64"
+      applicants:
+        type: "array"
+        items:
+          $ref: '#/definitions/Candidate'
+       
+  UserWithID:
+    allOf:
+    -  type: "object"
+       properties:
+        id: 
+          type: "string"
+          example: "b891b58a-0743-11ed-b939-0242ac120002"
+    -  $ref: '#/definitions/User'    
+  User:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      role  :
+        type: "array"
+        items:
+          $ref: '#/definitions/RoleWithId'
+  CandidateWithId:
+    allOf:
+    - type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "b891b58a-0743-11ed-b939-0242ac120002"
+    - $ref: '#/definitions/Candidate'
+
+  Candidate:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      phone:
+        type: "string"
+
+  Project:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      projectName:
+        type: "string"
+      projectMembers: 
+        type: array
+        items:
+          $ref: '#/definitions/User'
+      deadline:
+        type: string
+    xml:
+      name: "Project"
+  Interview:
+    type: "object"
+    properties:
+      date: 
+        type: "string"
+        example: "DD/MM/YYYY"
+      applicant:
+        type: "string"
+      interviewer:
+        type: "array"
+        items:
+          $ref: '#/definitions/UserWithID'
+      interviewType:
+        type: "string"
+  InterviewWithId:
+    allOf:
+    - type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "b891b58a-0743-11ed-b939-0242ac120002"
+    - $ref:  '#/definitions/Interview'
+  
+  RoleWithId:
+    allOf:
+    - type: "object"
+      properties:
+        id:
+          type: "integer"
+    - $ref: '#/definitions/Role'
+  
+  Role:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int64"
+      roleName: 
+        type: "string"
+        example: "Recruiter"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
